@@ -1,0 +1,22 @@
+Package: deweyrdownload
+Title: What the Package Does (One Line, Title Case)
+Version: 0.0.0.9000
+Authors@R: 
+        c(
+        person("Alyssa", "Cox", email = "cox24018@byui.edu", role = c("aut", "cre")),
+        person("Brock", "Ellis", role = "aut"),
+        person("Sheldon", "Downs", role = "aut"),
+        person("Stockton", "Lawerence", role = "aut"),
+        person("Mitchell", "Mecham", role = "aut"),
+        person("Phillip", "Rosequist", role = "aut")
+    )
+Description: What the package does (one paragraph).
+License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
+    license
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3
+Imports:
+    magrittr,
+    dplyr,
+    readr
