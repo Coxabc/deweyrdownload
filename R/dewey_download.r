@@ -10,6 +10,7 @@
 #'   Default is a "dewey-downloads" folder in the current working directory.
 #' @param python_version Character string specifying the Python version to use.
 #'   Default is "3.13". Must be a valid Python version supported by uv.
+#'   Python 3.14 is not compatible with deweypy as of this writing, so do not specify 3.14 or higher.
 #' @param num_workers Integer specifying number of workers for multi-threaded downloads.
 #'   Default is NULL (uses deweypy's default of 8). Only modify if you have specific 
 #'   performance requirements; most users should leave this unchanged.
@@ -83,15 +84,20 @@
 #' }
 dewey_download <- function(api_key,
                            folder_id,
-                           download_path = file.path(getwd(), "dewey-downloads"),
+                           download_path = NULL,
                            python_version = "3.13",
                            num_workers = NULL,
                            partition_key_before = NULL,
                            partition_key_after = NULL) {
   
   # Ensure download folder exists
-  if (!dir.exists(download_path)) {
-    dir.create(download_path, recursive = TRUE)
+  if (is.null(download_path)) {
+    download_path <- get_download_dir(create = TRUE)
+  } else {
+    # If custom path provided, ensure it exists
+    if (!dir.exists(download_path)) {
+      dir.create(download_path, recursive = TRUE)
+    }
   }
   
   # Step 1: Check for uv

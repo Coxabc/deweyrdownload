@@ -7,7 +7,7 @@
 dewey_download(
   api_key,
   folder_id,
-  download_path = file.path(getwd(), "dewey-downloads"),
+  download_path = NULL,
   python_version = "3.13",
   num_workers = NULL,
   partition_key_before = NULL,
@@ -23,7 +23,8 @@ dewey_download(
 Default is a "dewey-downloads" folder in the current working directory.}
 
 \item{python_version}{Character string specifying the Python version to use.
-Default is "3.13". Must be a valid Python version supported by uv.}
+Default is "3.13". Must be a valid Python version supported by uv.
+Python 3.14 is not compatible with deweypy as of this writing, so do not specify 3.14 or higher.}
 
 \item{num_workers}{Integer specifying number of workers for multi-threaded downloads.
 Default is NULL (uses deweypy's default of 8). Only modify if you have specific

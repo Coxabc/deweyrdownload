@@ -51,7 +51,7 @@ handles uv installation if needed and executes the download in an isolated envir
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">dewey_download</span><span class="op">(</span></span>
 <span>  <span class="va">api_key</span>,</span>
 <span>  <span class="va">folder_id</span>,</span>
-<span>  download_path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"dewey-downloads"</span><span class="op">)</span>,</span>
+<span>  download_path <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  python_version <span class="op">=</span> <span class="st">"3.13"</span>,</span>
 <span>  num_workers <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  partition_key_before <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -78,7 +78,8 @@ Default is a "dewey-downloads" folder in the current working directory.</p></dd>
 
 <dt id="arg-python-version">python_version<a class="anchor" aria-label="anchor" href="#arg-python-version"></a></dt>
 <dd><p>Character string specifying the Python version to use.
-Default is "3.13". Must be a valid Python version supported by uv.</p></dd>
+Default is "3.13". Must be a valid Python version supported by uv.
+Python 3.14 is not compatible with deweypy as of this writing, so do not specify 3.14 or higher.</p></dd>
 
 
 <dt id="arg-num-workers">num_workers<a class="anchor" aria-label="anchor" href="#arg-num-workers"></a></dt>
