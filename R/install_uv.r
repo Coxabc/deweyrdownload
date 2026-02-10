@@ -1,29 +1,4 @@
-#' Check if UV is installed
-#'
-#' Checks whether the UV Python package manager is available on the system PATH.
-#'
-#' @return A logical value: `TRUE` if UV is found on the system PATH, `FALSE` otherwise.
-#'
-#' @details
-#' This function uses `Sys.which()` to search for the UV executable in the system's
-#' PATH environment variable. UV is a fast Python package installer and resolver
-#' written in Rust.
-#'
-#' @examples
-#' if (has_uv()) {
-#'   message("UV is installed")
-#' } else {
-#'   message("UV is not installed")
-#' }
-#'
-#' @seealso \code{\link{install_uv}} for installing UV if it's not present
-#'
-#' @export
-has_uv <- function() {
-  Sys.which("uv") != ""
-}
-
-#' Install UV Python package manager
+#' Install UV Python package manager (Internal)
 #'
 #' Downloads and installs UV, a fast Python package installer and resolver.
 #' The installation is skipped if UV is already present on the system.
@@ -52,20 +27,10 @@ has_uv <- function() {
 #'         \url{https://docs.astral.sh/uv/}
 #' }
 #'
-#' @examples
-#' \dontrun{
-#' # Install UV if not already present
-#' install_uv()
-#'
-#' # Check if installation was successful
-#' if (has_uv()) {
-#'   message("UV installation successful!")
-#' }
-#' }
-#'
 #' @seealso \code{\link{has_uv}} to check if UV is already installed
 #'
-#' @export
+#' @keywords internal
+#' @noRd
 install_uv <- function() {
   if (Sys.which("uv") != "") {
     return(invisible(TRUE))

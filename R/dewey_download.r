@@ -1,15 +1,15 @@
-#' Download Files Using Deweypy
+#' Run Dewey Download Using UV
 #'
-#' Downloads all files from a Dewey folder using the deweypy Python package.
-#' This function interfaces with the Dewey file management system to batch download
-#' files from a specified folder to your local machine.
+#' Downloads files from a Dewey folder using uvx to run deweypy without requiring
+#' a local Python installation or manual package management. This function automatically
+#' handles uv installation if needed and executes the download in an isolated environment.
 #'
 #' @param api_key Character string with the API key for deweypy authentication
 #' @param folder_id Character string with the Dewey folder ID or URL to download from
 #' @param download_path Character string specifying where to download files.
-#'   If NULL (default), uses the default directory from \code{get_download_dir()}
-#' @param python_path Character string specifying the path to Python executable. 
-#'   If NULL (default), will automatically search for Python on the system.
+#'   Default is a "dewey-downloads" folder in the current working directory.
+#' @param python_version Character string specifying the Python version to use.
+#'   Default is "3.13". Must be a valid Python version supported by uv.
 #' @param num_workers Integer specifying number of workers for multi-threaded downloads.
 #'   Default is NULL (uses deweypy's default of 8). Only modify if you have specific 
 #'   performance requirements; most users should leave this unchanged.
@@ -21,14 +21,23 @@
 #'   date-partitioned datasets. Leave NULL to download all data.
 #'
 #' @details
+#' This function uses \href{https://docs.astral.sh/uv/}{uv} (a fast Python package installer)
+#' to run deweypy without requiring you to manage Python environments manually.
+#' 
 #' The function performs the following steps:
 #' \itemize{
-#'   \item Locates Python executable (auto-detect or use provided path)
-#'   \item Validates the folder ID/URL
-#'   \item Creates download directory if it doesn't exist
-#'   \item Executes deweypy's speedy-download command
+#'   \item Checks if uv is installed, and installs it if needed
+#'   \item Creates the download directory if it doesn't exist
+#'   \item Executes deweypy's speedy-download command via uvx in an isolated environment
 #' }
 #' 
+#' The download progress will be displayed in real-time as the function executes.
+#' 
+#' @section Note on UV Installation:
+#' If uv needs to be installed, you may see a message recommending you restart your
+#' terminal for optimal performance in future runs. The function will work without
+#' restarting, but subsequent runs may be faster after a restart.
+#'
 #' @section Advanced Options:
 #' The \code{num_workers}, \code{partition_key_before}, and \code{partition_key_after}
 #' parameters are advanced options that most users won't need to modify. The default
@@ -38,67 +47,68 @@
 #'
 #' @examples
 #' \dontrun{
-#' # Basic usage - auto-detect Python path, default download location
-#' dewey_download(api_key = "your-api-key", folder_id = "folder123")
-#' 
-#' # Specify custom download path
+#' # Basic usage with default settings
 #' dewey_download(
-#'   api_key = "your-api-key", 
-#'   folder_id = "folder123",
-#'   download_path = "C:/Downloads/my-files"
+#'   api_key = "your-api-key",
+#'   folder_id = "folder123"
 #' )
 #' 
-#' # Advanced: Download only recent data from partitioned dataset
+#' # Specify custom download location
 #' dewey_download(
-#'   api_key = "your-api-key", 
+#'   api_key = "your-api-key",
+#'   folder_id = "folder123",
+#'   download_path = "C:/my-data"
+#' )
+#' 
+#' # Use a different Python version
+#' dewey_download(
+#'   api_key = "your-api-key",
+#'   folder_id = "folder123",
+#'   python_version = "3.12"
+#' )
+#' 
+#' # Advanced: Multi-threaded download with 16 workers
+#' dewey_download(
+#'   api_key = "your-api-key",
+#'   folder_id = "folder123",
+#'   num_workers = 16
+#' )
+#' 
+#' # Advanced: Download only partitions after a specific date
+#' dewey_download(
+#'   api_key = "your-api-key",
 #'   folder_id = "folder123",
 #'   partition_key_after = "2024-01-01"
 #' )
-#' 
-#' # Advanced: Adjust workers for specific performance needs
-#' dewey_download(
-#'   api_key = "your-api-key", 
-#'   folder_id = "folder123",
-#'   num_workers = 4
-#' )
 #' }
-dewey_download <- function(api_key, 
-                           folder_id, 
-                           download_path = NULL, 
-                           python_path = NULL,
+dewey_download <- function(api_key,
+                           folder_id,
+                           download_path = file.path(getwd(), "dewey-downloads"),
+                           python_version = "3.13",
                            num_workers = NULL,
                            partition_key_before = NULL,
                            partition_key_after = NULL) {
   
-  # If python_path is NULL, auto-detect it
-  if (is.null(python_path)) {
-    python_path <- find_python()
+  # Ensure download folder exists
+  if (!dir.exists(download_path)) {
+    dir.create(download_path, recursive = TRUE)
   }
   
-  # Validate that python_path exists
-  if (!file.exists(python_path)) {
-    stop("Python executable not found at: ", python_path)
+  # Step 1: Check for uv
+  if (!has_uv()) {
+    install_uv()
+    message("Restarting the terminal will increase speed of future runs")
   }
 
-  # Validate folder_id
+   # Validate folder_id
   folder_id <- parse_url(folder_id)
   
-  # Set default download path if not provided
-  if (is.null(download_path)) {
-    download_path <- get_download_dir(create = TRUE)
-  } else {
-    # If custom path provided, ensure it exists
-    if (!dir.exists(download_path)) {
-      dir.create(download_path, recursive = TRUE)
-    }
-  }
-  
-  # Execute deweypy download command
-  run_deweypy(
-    python_path = python_path,
+  # Step 2: Run Dewey download
+  run_deweypy_uv(
     api_key = api_key,
     download_path = download_path,
     folder_id = folder_id,
+    python_version = python_version,
     num_workers = num_workers,
     partition_key_before = partition_key_before,
     partition_key_after = partition_key_after

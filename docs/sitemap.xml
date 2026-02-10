@@ -3,9 +3,11 @@
 <url><loc>/authors.html</loc></url>
 <url><loc>/index.html</loc></url>
 <url><loc>/reference/dewey_download.html</loc></url>
+<url><loc>/reference/dewey_download_py.html</loc></url>
 <url><loc>/reference/find_python.html</loc></url>
 <url><loc>/reference/get_download_dir.html</loc></url>
 <url><loc>/reference/index.html</loc></url>
+<url><loc>/reference/install_deweypy.html</loc></url>
 <url><loc>/reference/parse_url.html</loc></url>
 <url><loc>/reference/read_compressed_csvs.html</loc></url>
 <url><loc>/reference/run_deweypy.html</loc></url>

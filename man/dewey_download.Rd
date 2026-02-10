@@ -2,13 +2,13 @@
 % Please edit documentation in R/dewey_download.r
 \name{dewey_download}
 \alias{dewey_download}
-\title{Download Files Using Deweypy}
+\title{Run Dewey Download Using UV}
 \usage{
 dewey_download(
   api_key,
   folder_id,
-  download_path = NULL,
-  python_path = NULL,
+  download_path = file.path(getwd(), "dewey-downloads"),
+  python_version = "3.13",
   num_workers = NULL,
   partition_key_before = NULL,
   partition_key_after = NULL
@@ -20,10 +20,10 @@ dewey_download(
 \item{folder_id}{Character string with the Dewey folder ID or URL to download from}
 
 \item{download_path}{Character string specifying where to download files.
-If NULL (default), uses the default directory from \code{get_download_dir()}}
+Default is a "dewey-downloads" folder in the current working directory.}
 
-\item{python_path}{Character string specifying the path to Python executable.
-If NULL (default), will automatically search for Python on the system.}
+\item{python_version}{Character string specifying the Python version to use.
+Default is "3.13". Must be a valid Python version supported by uv.}
 
 \item{num_workers}{Integer specifying number of workers for multi-threaded downloads.
 Default is NULL (uses deweypy's default of 8). Only modify if you have specific
@@ -38,19 +38,30 @@ includes all partitions from and including this date onward. Only relevant for
 date-partitioned datasets. Leave NULL to download all data.}
 }
 \description{
-Downloads all files from a Dewey folder using the deweypy Python package.
-This function interfaces with the Dewey file management system to batch download
-files from a specified folder to your local machine.
+Downloads files from a Dewey folder using uvx to run deweypy without requiring
+a local Python installation or manual package management. This function automatically
+handles uv installation if needed and executes the download in an isolated environment.
 }
 \details{
+This function uses \href{https://docs.astral.sh/uv/}{uv} (a fast Python package installer)
+to run deweypy without requiring you to manage Python environments manually.
+
 The function performs the following steps:
 \itemize{
-\item Locates Python executable (auto-detect or use provided path)
-\item Validates the folder ID/URL
-\item Creates download directory if it doesn't exist
-\item Executes deweypy's speedy-download command
+\item Checks if uv is installed, and installs it if needed
+\item Creates the download directory if it doesn't exist
+\item Executes deweypy's speedy-download command via uvx in an isolated environment
 }
+
+The download progress will be displayed in real-time as the function executes.
 }
+\section{Note on UV Installation}{
+
+If uv needs to be installed, you may see a message recommending you restart your
+terminal for optimal performance in future runs. The function will work without
+restarting, but subsequent runs may be faster after a restart.
+}
+
 \section{Advanced Options}{
 
 The \code{num_workers}, \code{partition_key_before}, and \code{partition_key_after}
@@ -60,28 +71,38 @@ settings work well for typical use cases.
 
 \examples{
 \dontrun{
-# Basic usage - auto-detect Python path, default download location
-dewey_download(api_key = "your-api-key", folder_id = "folder123")
-
-# Specify custom download path
+# Basic usage with default settings
 dewey_download(
-  api_key = "your-api-key", 
-  folder_id = "folder123",
-  download_path = "C:/Downloads/my-files"
+  api_key = "your-api-key",
+  folder_id = "folder123"
 )
 
-# Advanced: Download only recent data from partitioned dataset
+# Specify custom download location
 dewey_download(
-  api_key = "your-api-key", 
+  api_key = "your-api-key",
+  folder_id = "folder123",
+  download_path = "C:/my-data"
+)
+
+# Use a different Python version
+dewey_download(
+  api_key = "your-api-key",
+  folder_id = "folder123",
+  python_version = "3.12"
+)
+
+# Advanced: Multi-threaded download with 16 workers
+dewey_download(
+  api_key = "your-api-key",
+  folder_id = "folder123",
+  num_workers = 16
+)
+
+# Advanced: Download only partitions after a specific date
+dewey_download(
+  api_key = "your-api-key",
   folder_id = "folder123",
   partition_key_after = "2024-01-01"
-)
-
-# Advanced: Adjust workers for specific performance needs
-dewey_download(
-  api_key = "your-api-key", 
-  folder_id = "folder123",
-  num_workers = 4
 )
 }
 }
