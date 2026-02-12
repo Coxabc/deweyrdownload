@@ -39,7 +39,9 @@
 #' @seealso
 #' \code{\link{find_python}} for locating the Python executable
 #'
-#' @export
+#' @keywords internal
+#' @noRd
+
 install_deweypy <- function(upgrade = FALSE) {
 
   python_path <- find_python()

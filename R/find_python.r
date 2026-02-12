@@ -5,13 +5,15 @@
 #' installation directories.
 #'
 #' @return Character string containing the path to a Python executable.
-#' @export
+
 #' @examples
 #' \dontrun{
 #' # Find Python on your system
 #' python_path <- find_python()
 #' print(python_path)
 #' }
+#' @keywords internal
+#' @noRd
 find_python <- function() {
   # Try Sys.which first (best practice)
   py <- Sys.which(c("python", "python3"))

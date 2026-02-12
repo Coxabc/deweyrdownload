@@ -15,7 +15,8 @@
 #' # Get path without creating directory
 #' get_download_dir(create = FALSE)
 #'
-#' @export
+#' @keywords internal
+#' @noRd
 get_download_dir <- function(create = TRUE) {
     download_path <- file.path(getwd(), "dewey-downloads")
 

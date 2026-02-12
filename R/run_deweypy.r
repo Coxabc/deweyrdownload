@@ -17,6 +17,7 @@
 #' @return The exit status from \code{system2()}, invisibly
 #'
 #' @keywords internal
+#' @noRd
 run_deweypy <- function(python_path, 
                         api_key, 
                         download_path, 

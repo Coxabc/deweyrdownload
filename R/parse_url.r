@@ -20,7 +20,8 @@
 #' parse_url("prj_evgjik8m__fldr_xagc4dttgm4rh93ad")
 #' # Returns: "prj_evgjik8m__fldr_xagc4dttgm4rh93ad"
 #'
-#' @export
+#' @keywords internal
+#' @noRd
 parse_url <- function(url) {
     # If already a folder ID (starts with prj_), return as-is
     if (grepl("^prj_", url)) {

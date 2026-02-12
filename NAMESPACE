@@ -2,9 +2,3 @@
 
 export(dewey_download)
 export(dewey_download_py)
-export(find_python)
-export(get_download_dir)
-export(install_deweypy)
-export(parse_url)
-export(read_compressed_csvs)
-importFrom(magrittr,"%>%")
